@@ -9,7 +9,7 @@ public class Project extends JFrame {
         setSize(1200, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+//
         // 전체 레이아웃
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
