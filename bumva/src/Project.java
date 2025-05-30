@@ -1,6 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class Project extends JFrame {
@@ -22,8 +23,8 @@ public class Project extends JFrame {
 
         // 중앙 전체 패널
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BorderLayout());
         contentPane.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.setLayout(new MigLayout("", "[1200px]", "[39px][785px]"));
 
         // 검색 패널
         JPanel searchPanel = new JPanel();
@@ -32,12 +33,14 @@ public class Project extends JFrame {
         JButton searchBtn = new JButton("🔍");
         searchPanel.add(searchField);
         searchPanel.add(searchBtn);
-        centerPanel.add(searchPanel, BorderLayout.NORTH);
+        centerPanel.add(searchPanel, "cell 0 0,growx,aligny top");
 
         // 중앙 하단 콘텐츠
         JPanel bodyPanel = new JPanel();
-        bodyPanel.setLayout(new GridLayout(1, 2));
-        centerPanel.add(bodyPanel, BorderLayout.CENTER);
+        centerPanel.add(bodyPanel, "cell 0 1,grow");
+        bodyPanel.setLayout(new MigLayout("insets 0, alignx center",     // align → alignx 로 수정
+        	    "[grow, center][grow, center]", // column constraints
+        	    "[grow, center]" ));
 
         // 좌측: 이미지 그리드
         JPanel imagePanel = new JPanel();
@@ -45,7 +48,7 @@ public class Project extends JFrame {
         for (int i = 1; i <= 24; i++) {
             imagePanel.add(new JLabel(new ImageIcon("placeholder.png"))); // 이미지 교체 필요
         }
-        bodyPanel.add(new JScrollPane(imagePanel));
+        bodyPanel.add(new JScrollPane(imagePanel), "cell 0 0,grow");
 
         // 우측: 피처 버튼 + 표
         JPanel rightPanel = new JPanel();
@@ -66,7 +69,7 @@ public class Project extends JFrame {
         JScrollPane tableScroll = new JScrollPane(table);
         rightPanel.add(tableScroll, BorderLayout.CENTER);
 
-        bodyPanel.add(rightPanel);
+        bodyPanel.add(rightPanel, "cell 1 0,grow");
     }
 
     public static void main(String[] args) {
