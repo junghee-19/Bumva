@@ -1,13 +1,24 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class PlayerStatsUI extends JFrame {
-
     private static final String FONT_PATH = "/Users/choejeonghui/Documents/GitHub/Bumva/bumva/resource/fonts/The Jamsil 5 Bold.ttf";
     private CardLayout cardLayout;
     private JPanel mainContentPanel;
+    private DefaultCategoryDataset dataset;
+    private JFreeChart lineChart;
+    private ChartPanel chartPanel;
 
     public PlayerStatsUI() {
         setTitle("선수 상세 프레임");
@@ -18,7 +29,6 @@ public class PlayerStatsUI extends JFrame {
         JPanel contentPane = new JPanel(new BorderLayout());
         setContentPane(contentPane);
 
-        // ───── 상단 바 ─────
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setPreferredSize(new Dimension(1200, 60));
         topBar.setBackground(new Color(30, 30, 60));
@@ -30,16 +40,15 @@ public class PlayerStatsUI extends JFrame {
         topBar.add(titleLabel, BorderLayout.WEST);
         contentPane.add(topBar, BorderLayout.NORTH);
 
-        // ───── 메인 패널 ─────
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         JPanel playerInfoPanel = new JPanel(new BorderLayout());
-        playerInfoPanel.setPreferredSize(new Dimension(1200, 300));
+        playerInfoPanel.setPreferredSize(new Dimension(1200, 200));
         playerInfoPanel.setBackground(new Color(40, 40, 50));
 
         JLabel playerImage = new JLabel(new ImageIcon("ponce.png"));
-        playerImage.setPreferredSize(new Dimension(250, 300));
+        playerImage.setPreferredSize(new Dimension(250, 200));
         playerImage.setHorizontalAlignment(SwingConstants.CENTER);
         playerInfoPanel.add(playerImage, BorderLayout.WEST);
 
@@ -67,10 +76,8 @@ public class PlayerStatsUI extends JFrame {
         rightInfo.add(new JLabelWithStyle("평균자책 1위 🥇", 16, false));
         rightInfo.add(new JLabelWithStyle("다승 공동1위 🥇", 16, false));
         playerInfoPanel.add(rightInfo, BorderLayout.EAST);
-
         mainPanel.add(playerInfoPanel);
 
-        // ───── 버튼 패널 ─────
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         buttonPanel.setPreferredSize(new Dimension(1200, 50));
         buttonPanel.setBackground(new Color(230, 230, 230));
@@ -79,7 +86,6 @@ public class PlayerStatsUI extends JFrame {
         for (String text : btnTexts) {
             JButton btn = new JButton(text);
             btn.setPreferredSize(new Dimension(140, 40));
-            btn.setFocusPainted(false);
             btn.setFont(loadCustomFont(18f, false));
             btn.addActionListener(e -> {
                 switch (text) {
@@ -92,34 +98,57 @@ public class PlayerStatsUI extends JFrame {
         }
         mainPanel.add(buttonPanel);
 
-        // ───── 카드 전환 패널 (표/댓글) ─────
         cardLayout = new CardLayout();
         mainContentPanel = new JPanel(cardLayout);
-        mainContentPanel.setPreferredSize(new Dimension(1200, 300));
+        mainContentPanel.setPreferredSize(new Dimension(1200, 450));
 
-        // ▶ 정보창: 표
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+
         String[] columns = {"평균자책", "승-패", "이닝", "삼진", "피안타", "피홈런", "볼넷", "WHIP"};
         Object[][] rowData = {{"1.48", "8-0", "67", "93", "39", "2", "18", "0.85"}};
         JTable table = new JTable(new DefaultTableModel(rowData, columns));
         table.setFont(loadCustomFont(14f, false));
         table.setRowHeight(28);
         JScrollPane tableScroll = new JScrollPane(table);
-        mainContentPanel.add(tableScroll, "info");
+        tableScroll.setPreferredSize(new Dimension(1200, 150));
+        infoPanel.add(tableScroll);
 
-        // ▶ 댓글창
+        dataset = new DefaultCategoryDataset();
+        updateDataset("평균자책");
+
+        lineChart = ChartFactory.createLineChart(null, "날짜", "", dataset, PlotOrientation.VERTICAL, false, false, false);
+        CategoryPlot plot = lineChart.getCategoryPlot();
+        LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+        renderer.setSeriesStroke(0, new BasicStroke(3f));
+        renderer.setSeriesShapesVisible(0, true);
+        chartPanel = new ChartPanel(lineChart);
+        chartPanel.setPreferredSize(new Dimension(1200, 250));
+        infoPanel.add(chartPanel);
+
+        table.getTableHeader().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int col = table.columnAtPoint(e.getPoint());
+                String columnName = table.getColumnName(col);
+                updateDataset(columnName);
+                lineChart.setTitle("경기별 " + columnName);
+            }
+        });
+
+        mainContentPanel.add(infoPanel, "info");
+
         JPanel commentPanel = new JPanel(new BorderLayout());
         JTextArea commentArea = new JTextArea();
         commentArea.setFont(loadCustomFont(14f, false));
         commentArea.setEditable(false);
         JScrollPane commentScroll = new JScrollPane(commentArea);
-
         JPanel commentInputPanel = new JPanel(new BorderLayout());
         JTextField commentInput = new JTextField();
         JButton postBtn = new JButton("등록");
         postBtn.setFont(loadCustomFont(14f, false));
         commentInputPanel.add(commentInput, BorderLayout.CENTER);
         commentInputPanel.add(postBtn, BorderLayout.EAST);
-
         postBtn.addActionListener(e -> {
             String text = commentInput.getText().trim();
             if (!text.isEmpty()) {
@@ -127,7 +156,6 @@ public class PlayerStatsUI extends JFrame {
                 commentInput.setText("");
             }
         });
-
         commentPanel.add(commentScroll, BorderLayout.CENTER);
         commentPanel.add(commentInputPanel, BorderLayout.SOUTH);
         mainContentPanel.add(commentPanel, "comment");
@@ -136,21 +164,37 @@ public class PlayerStatsUI extends JFrame {
         contentPane.add(mainPanel, BorderLayout.CENTER);
     }
 
+    private void updateDataset(String metric) {
+        dataset.clear();
+        double[] values;
+        switch (metric) {
+            case "승-패" -> values = new double[]{1, 2, 3, 4, 5};
+            case "이닝" -> values = new double[]{5, 6, 7, 6, 8};
+            case "삼진" -> values = new double[]{7, 8, 9, 8, 10};
+            case "피안타" -> values = new double[]{4, 5, 3, 6, 7};
+            case "피홈런" -> values = new double[]{1, 1, 0, 2, 1};
+            case "볼넷" -> values = new double[]{2, 3, 1, 2, 3};
+            case "WHIP" -> values = new double[]{1.1, 1.0, 0.9, 1.2, 1.1};
+            default -> values = new double[]{3.2, 4.1, 2.5, 3.6, 4.8};
+        }
+        String[] dates = {"05.04", "05.10", "05.17", "05.22", "05.28"};
+        for (int i = 0; i < dates.length; i++) {
+            dataset.addValue(values[i], metric, dates[i]);
+        }
+    }
+
     private static class JLabelWithStyle extends JLabel {
         public JLabelWithStyle(String text, int size, boolean bold) {
             super(text);
             setForeground(Color.WHITE);
-            setFont(loadCustomFont((float) size, bold));
+            setFont(loadCustomFont(size, bold));
         }
     }
 
     private static Font loadCustomFont(float size, boolean bold) {
         try {
             File fontFile = new File(FONT_PATH);
-            if (!fontFile.exists()) {
-                System.err.println("❌ 폰트 파일 없음: " + FONT_PATH);
-                return new Font("맑은 고딕", bold ? Font.BOLD : Font.PLAIN, (int) size);
-            }
+            if (!fontFile.exists()) return new Font("맑은 고딕", bold ? Font.BOLD : Font.PLAIN, (int) size);
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
             font = font.deriveFont(bold ? Font.BOLD : Font.PLAIN, size);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
