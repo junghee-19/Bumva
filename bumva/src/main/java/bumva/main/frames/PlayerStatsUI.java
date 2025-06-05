@@ -13,7 +13,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import bumva.main.compoments.HeaderPanel;
+import bumva.main.components.HeaderPanel;
 
 
 public class PlayerStatsUI extends JFrame {

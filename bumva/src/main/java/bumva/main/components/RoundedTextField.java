@@ -1,4 +1,4 @@
-package bumva.main.compoments;
+package bumva.main.components;
 import javax.swing.*;
 import java.awt.*;
 

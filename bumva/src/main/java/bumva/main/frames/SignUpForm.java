@@ -20,8 +20,8 @@ import javax.swing.border.EmptyBorder;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
-import bumva.main.compoments.HeaderPanel;
-import bumva.main.compoments.RoundedPanel;
+import bumva.main.components.HeaderPanel;
+import bumva.main.components.RoundedPanel;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
