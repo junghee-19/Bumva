@@ -1,42 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="com.miglayout.swing_11.4.2.jar"/>
-	<classpathentry kind="lib" path="com.miglayout.core_11.4.2.jar"/>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="optional" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
-		<attributes>
-			<attribute name="test" value="true"/>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
-		<attributes>
-			<attribute name="test" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="optional" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="output" path="target/classes"/>
+  <!-- Java 소스 디렉토리 -->
+  <classpathentry kind="src" output="target/classes" path="src/main/java">
+    <attributes>
+      <attribute name="optional" value="true"/>
+      <attribute name="maven.pomderived" value="true"/>
+    </attributes>
+  </classpathentry>
+
+  <!-- 리소스 디렉토리 -->
+  <classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+    <attributes>
+      <attribute name="maven.pomderived" value="true"/>
+      <attribute name="optional" value="true"/>
+    </attributes>
+  </classpathentry>
+
+  <!-- 테스트 소스 -->
+  <classpathentry kind="src" output="target/test-classes" path="src/test/java">
+    <attributes>
+      <attribute name="test" value="true"/>
+      <attribute name="optional" value="true"/>
+      <attribute name="maven.pomderived" value="true"/>
+    </attributes>
+  </classpathentry>
+
+  <!-- JDK -->
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
+    <attributes>
+      <attribute name="maven.pomderived" value="true"/>
+    </attributes>
+  </classpathentry>
+
+  <!-- MigLayout -->
+  <classpathentry kind="lib" path="com.miglayout.swing_11.4.2.jar"/>
+  <classpathentry kind="lib" path="com.miglayout.core_11.4.2.jar"/>
+
+  <!-- JavaFX SDK 로컬 JARs (Apple Silicon 전용 경로 예시) -->
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.base.jar"/>
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.controls.jar"/>
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.fxml.jar"/>
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.graphics.jar"/>
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.media.jar"/>
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.swing.jar"/>
+  <classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.web.jar"/>
+
+  <!-- Maven 의존성 -->
+  <classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+    <attributes>
+      <attribute name="maven.pomderived" value="true"/>
+    </attributes>
+  </classpathentry>
+
+  <!-- 클래스 출력 위치 -->
+  <classpathentry kind="output" path="target/classes"/>
 </classpath>
