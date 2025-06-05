@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>bumva</groupId>
+  <artifactId>bumva</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <javafx.version>21.0.1</javafx.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <javafx.sdk.path>/Users/choejeonghui/Downloads/javafx-sdk-21.0.1/lib</javafx.sdk.path> <!-- 절대경로 지정 -->
+  </properties>
+
+	<dependencies>
+	  <dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-controls</artifactId>
+	    <version>21.0.1</version>
+	    <classifier>mac-aarch64</classifier>
+	  </dependency>
+	  <dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-fxml</artifactId>
+	    <version>21.0.1</version>
+	    <classifier>mac-aarch64</classifier>
+	  </dependency>
+	  <dependency>
+	    <groupId>org.openjfx</groupId>
+	    <artifactId>javafx-web</artifactId>
+	    <version>21.0.1</version>
+	    <classifier>mac-aarch64</classifier>
+	  </dependency>
+	</dependencies>
+
+  <build>
+    <plugins>
+      <!-- Java 컴파일 설정 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+
+      <!-- JavaFX 실행 설정 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <mainClass>resource.bumva.ChatWithVideoApp</mainClass>
+          <arguments>
+            <argument>--module-path</argument>
+            <argument>${javafx.sdk.path}</argument>
+            <argument>--add-modules</argument>
+            <argument>javafx.controls,javafx.fxml,javafx.web</argument>
+            <argument>-Dprism.order=sw</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
