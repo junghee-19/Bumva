@@ -1,9 +1,14 @@
+package bumva.main.frames;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import bumva.main.compoments.HeaderPanel;
+import bumva.main.compoments.RoundedButton;
+import bumva.main.compoments.RoundedTextField;
 import net.miginfocom.swing.MigLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -12,8 +17,10 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
-public class Project extends JFrame {
-	public Project() {
+public class MainFrame extends JFrame {
+	private SignInForm signInForm;
+	
+	public MainFrame() {
 		try {
 			UIManager.setLookAndFeel(new FlatLightLaf());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -22,7 +29,8 @@ public class Project extends JFrame {
 		}
 
 		setTitle("메인 프레임");
-		setSize(1200, 900);
+		setSize(1100, 700);
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
@@ -32,25 +40,14 @@ public class Project extends JFrame {
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setLayout(null);
 		
-
-		// 상단 제목
-		JLabel titleLabel = new JLabel("KBO.GG", SwingConstants.LEFT);
-		titleLabel.setBounds(0, -5, 1200, 120);
-		titleLabel.setBackground(new Color(0, 32, 99));
-		titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 40));
-		titleLabel.setPreferredSize(new Dimension(0, 80)); // 세로 높이 80px
-		titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 20, 0, 0)); // 위, 좌, 아래, 우 여백
-
-		titleLabel.setForeground(new Color(255, 255, 255)); // 텍스트는 흰색
-		titleLabel.setOpaque(true); // 배경색 보이게 함
-
-		contentPane.add(titleLabel);
+		HeaderPanel headerPanel = new HeaderPanel(this);
+		contentPane.add(headerPanel);
 
 		// 검색 패널
 		JPanel searchPanel = new JPanel();
 		searchPanel.setBounds(0, 108, 1200, 99);
 		contentPane.add(searchPanel);
-		searchPanel.setBackground(new Color(0, 27, 89));
+		searchPanel.setBackground(new Color(0, 32, 98));
 		searchPanel.setMinimumSize(new Dimension(100, 120));
 		searchPanel.setLayout(null);
 
@@ -63,8 +60,8 @@ public class Project extends JFrame {
 		RoundedButton searchBtn = new RoundedButton("검색");
 		searchBtn.setBounds(550, 26, 100, 40);
 		searchBtn.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		searchBtn.setBackground(new Color(0x002063));
-		searchBtn.setForeground(Color.WHITE);
+		searchBtn.setBackground(new Color(255, 255, 255));
+		searchBtn.setForeground(new Color(0, 32, 99));
 		searchBtn.setPreferredSize(new Dimension(100, 40));
 		searchPanel.add(searchBtn, "aligny center");
 
@@ -72,14 +69,46 @@ public class Project extends JFrame {
 
 		// 중앙 전체 패널
 		JPanel centerPanel = new JPanel();
-		centerPanel.setBounds(99, 233, 1017, 639);
+		centerPanel.setBounds(23, 231, 1053, 435);
 		centerPanel.setBackground(new Color(255, 255, 255));
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(6, 6, 381, 627);
+		scrollPane_1.setBounds(6, 6, 349, 423);
 		centerPanel.add(scrollPane_1);
+
+		// 표 컬럼 및 데이터
+		String[] columnNames = { "순위", "선수명", "팀명", "평균자책점", "경기", "승리", "패배", "팀순위" };
+		Object[][] data = {
+			{ "1", "류현진", "한화", "2.34", "25", "15", "3", "2" },
+			{ "2", "김광현", "SSG", "2.67", "24", "14", "4", "3" }
+		};
+
+		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		
+		JButton btnNewButton = new JButton("피처 티어");
+		btnNewButton.setBounds(383, 6, 157, 47);
+		centerPanel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("타자 티어");
+		btnNewButton_1.setBounds(552, 6, 157, 47);
+		centerPanel.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("팀 티어");
+		btnNewButton_2.setBounds(721, 6, 157, 47);
+		centerPanel.add(btnNewButton_2);
+		
+		JButton btnNewButton_3 = new JButton("전체 선수");
+		btnNewButton_3.setBounds(890, 6, 157, 47);
+		centerPanel.add(btnNewButton_3);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(383, 67, 664, 362);
+		centerPanel.add(scrollPane_2);
+		
+		JTable table = new JTable(model);
+		scrollPane_2.setViewportView(table);
 
 		// Image grid panel
 		JPanel imagePanel = new JPanel();
@@ -95,15 +124,12 @@ public class Project extends JFrame {
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-		// 표
-		String[] columnNames = { "순위", "선수명", "팀명", "평균자책점", "경기", "승리", "패배", "팀순위" };
-		Object[][] data = new Object[20][columnNames.length];
+
 	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			FontUtil.applyGlobalFont(); // Apply the custom font globally
-			new Project().setVisible(true); // Start your main application window
+			new MainFrame().setVisible(true); // Start your main application window
 		});
 	}
 }
