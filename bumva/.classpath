@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="optional" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry excluding="src/main/resources/|src/main/java/" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="com.miglayout.swing_11.4.2.jar"/>
-	<classpathentry kind="lib" path="com.miglayout.core_11.4.2.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.base.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.controls.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.fxml.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.media.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.swing.jar"/>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib/javafx.web.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/miglayout/miglayout-swing/11.0/miglayout-swing-11.0.jar" sourcepath="M2_REPO/com/miglayout/miglayout-swing/11.0/miglayout-swing-11.0-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/miglayout/miglayout-core/11.0/miglayout-core-11.0.jar" sourcepath="M2_REPO/com/miglayout/miglayout-core/11.0/miglayout-core-11.0-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/formdev/flatlaf/3.2/flatlaf-3.2.jar" sourcepath="M2_REPO/com/formdev/flatlaf/3.2/flatlaf-3.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-controls/21.0.1/javafx-controls-21.0.1-mac-aarch64.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-graphics/21.0.1/javafx-graphics-21.0.1.jar" sourcepath="M2_REPO/org/openjfx/javafx-graphics/21.0.1/javafx-graphics-21.0.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-graphics/21.0.1/javafx-graphics-21.0.1-mac-aarch64.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-base/21.0.1/javafx-base-21.0.1.jar" sourcepath="M2_REPO/org/openjfx/javafx-base/21.0.1/javafx-base-21.0.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-base/21.0.1/javafx-base-21.0.1-mac-aarch64.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-fxml/21.0.1/javafx-fxml-21.0.1-mac-aarch64.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-controls/21.0.1/javafx-controls-21.0.1.jar" sourcepath="M2_REPO/org/openjfx/javafx-controls/21.0.1/javafx-controls-21.0.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-web/21.0.1/javafx-web-21.0.1-mac-aarch64.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-media/21.0.1/javafx-media-21.0.1.jar" sourcepath="M2_REPO/org/openjfx/javafx-media/21.0.1/javafx-media-21.0.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openjfx/javafx-media/21.0.1/javafx-media-21.0.1-mac-aarch64.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/jfree/jfreechart/1.5.6/jfreechart-1.5.6.jar" sourcepath="M2_REPO/org/jfree/jfreechart/1.5.6/jfreechart-1.5.6-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/jfree/jcommon/1.0.24/jcommon-1.0.24.jar" sourcepath="M2_REPO/org/jfree/jcommon/1.0.24/jcommon-1.0.24-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar" sourcepath="M2_REPO/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/3.21.9/protobuf-java-3.21.9.jar" sourcepath="M2_REPO/com/google/protobuf/protobuf-java/3.21.9/protobuf-java-3.21.9-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/mysql-connector-j-9.3.0/mysql-connector-j-9.3.0.jar"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/choejeonghui/Downloads/mysql-connector-j-9.3.0/mysql-connector-j-9.3.0.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

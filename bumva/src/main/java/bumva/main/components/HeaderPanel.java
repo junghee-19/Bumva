@@ -3,10 +3,9 @@ package bumva.main.components;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
-import bumva.main.frames.MainFrame;
 import bumva.main.frames.PlayerStatsUI;
-import bumva.main.frames.SignInForm;
-
+import bumva.main.frames.MainFrame;
+import bumva.main.frames.SignInForm; // ← 이 클래스가 실제로 존재하는지도 확인
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

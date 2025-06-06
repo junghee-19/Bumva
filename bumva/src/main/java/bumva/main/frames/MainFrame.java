@@ -2,14 +2,15 @@ package bumva.main.frames;
 
 import java.awt.*;
 import javax.swing.*;
+import bumva.main.components.RoundedButton;
+import bumva.main.components.RoundedTextField;
 import javax.swing.table.DefaultTableModel;
 import bumva.db.BatterDAO;
 import bumva.db.PitcherDAO;
 import bumva.db.TeamDAO;
-import com.formdev.flatlaf.FlatLightLaf;
 import bumva.main.components.HeaderPanel;
-import bumva.main.components.RoundedButton;
-import bumva.main.components.RoundedTextField;
+
+import com.formdev.flatlaf.FlatLightLaf;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
@@ -84,6 +85,10 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
+		System.out.println("🟢 main() 실행됨");
+		SwingUtilities.invokeLater(() -> {
+			System.out.println("🟢 MainFrame 인스턴스 생성");
+			new MainFrame().setVisible(true);
+		});
 	}
 }

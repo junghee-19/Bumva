@@ -100,7 +100,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <mainClass>resource.bumva.ChatWithVideoApp</mainClass>
+          <mainClass>bumva.main.frames.MainFrame</mainClass>
           <arguments>
             <argument>--module-path</argument>
             <argument>${javafx.sdk.path}</argument>

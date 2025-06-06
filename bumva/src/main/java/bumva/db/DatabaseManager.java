@@ -30,6 +30,16 @@ public class DatabaseManager {
     }
 
     public static Connection getConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                System.out.println("✅ DatabaseManager: DB 재연결 성공");
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ DatabaseManager: DB 연결 확인/재연결 실패");
+            e.printStackTrace();
+            return null;
+        }
         return connection;
     }
 

@@ -1,4 +1,5 @@
 package bumva.main.frames;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -13,9 +14,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import bumva.main.components.HeaderPanel;
-
-
 public class PlayerStatsUI extends JFrame {
     private static final String FONT_PATH = "/Users/choejeonghui/Documents/GitHub/Bumva/bumva/resource/fonts/The Jamsil 5 Bold.ttf";
     private CardLayout cardLayout;
@@ -26,20 +24,18 @@ public class PlayerStatsUI extends JFrame {
 
     public PlayerStatsUI() {
         setTitle("선수 상세 프레임");
-		setSize(1100, 700);
-		setResizable(false);
+        setSize(1100, 700);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        
-        
-        
+
         JPanel contentPane = new JPanel(new BorderLayout());
         setContentPane(contentPane);
 
-        HeaderPanel headerPanel = new HeaderPanel(this);
-        contentPane.add(headerPanel, BorderLayout.NORTH);
+        JPanel headerPanel = new JPanel();
         headerPanel.setPreferredSize(new Dimension(1100, 109));
-        
+        contentPane.add(headerPanel, BorderLayout.NORTH);
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -47,9 +43,11 @@ public class PlayerStatsUI extends JFrame {
         playerInfoPanel.setPreferredSize(new Dimension(1200, 200));
         playerInfoPanel.setBackground(new Color(40, 40, 50));
 
-        JLabel playerImage = new JLabel(new ImageIcon("ponce.png"));
+        // 이미지 제거 → 여백만 남김
+        JLabel playerImage = new JLabel("선수 이미지 없음");
         playerImage.setPreferredSize(new Dimension(250, 200));
         playerImage.setHorizontalAlignment(SwingConstants.CENTER);
+        playerImage.setForeground(Color.WHITE);
         playerInfoPanel.add(playerImage, BorderLayout.WEST);
 
         JPanel centerInfo = new JPanel();
@@ -206,6 +204,14 @@ public class PlayerStatsUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PlayerStatsUI().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            try {
+                System.out.println("▶ PlayerStatsUI 실행");
+                new PlayerStatsUI().setVisible(true);
+            } catch (Exception e) {
+                System.err.println("❌ 예외 발생:");
+                e.printStackTrace();
+            }
+        });
     }
 }
