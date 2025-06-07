@@ -3,9 +3,10 @@ package bumva.main.components;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
-import bumva.main.frames.PlayerStatsUI;
 import bumva.main.frames.MainFrame;
-import bumva.main.frames.SignInForm; // ← 이 클래스가 실제로 존재하는지도 확인
+import bumva.main.frames.PlayerStatsUI;
+import bumva.main.frames.SignInForm;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,43 +58,29 @@ public class HeaderPanel extends JPanel {
 		topMenuPanel.add(btnLogin);
 
 		JButton btnMenu1 = new JButton("야구 분석");
+		
 		btnMenu1.setBounds(57, 0, 117, 35);
 		btnMenu1.setForeground(new Color(255, 254, 255));
 		btnMenu1.setBackground(new Color(47, 62, 98));
 		btnMenu1.setBorder(new MatteBorder(0, 1, 0, 0, Color.WHITE));
 		btnMenu1.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        if (mainFrame == null) {
-		            mainFrame = new MainFrame();
-		        }
-		        Point currentLocation = parentFrame.getLocation();
-		        mainFrame.setLocation(currentLocation);
-		        mainFrame.setVisible(true);
-		        parentFrame.setVisible(false);
-		    }
+			public void actionPerformed(ActionEvent e) {
+				if (mainFrame == null) {
+					mainFrame = new MainFrame();
+				}
+				Point currentLocation = parentFrame.getLocation();
+				mainFrame.setLocation(currentLocation);
+				mainFrame.setVisible(true);
+				parentFrame.setVisible(false);
+			}
 		});
 		topMenuPanel.add(btnMenu1);
 
-		// ✅ 2번 버튼: JavaFX 영상 앱 실행
 		JButton btnMenu2 = new JButton("야구 동영상");
 		btnMenu2.setBounds(175, 0, 117, 35);
 		btnMenu2.setForeground(new Color(255, 254, 255));
 		btnMenu2.setBackground(new Color(47, 62, 98));
 		btnMenu2.setBorder(new MatteBorder(0, 1, 0, 0, Color.WHITE));
-		btnMenu2.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        new Thread(() -> {
-		            try {
-		                resource.bumva.ChatWithVideoApp.main(new String[]{});
-		            } catch (Exception ex) {
-		                ex.printStackTrace();
-		                JOptionPane.showMessageDialog(parentFrame, "ChatWithVideoApp 실행 중 오류 발생");
-		            }
-		        }).start();
-//		        parentFrame.setVisible(false);
-		    }
-		});
 		topMenuPanel.add(btnMenu2);
 
 		JButton btnMenu3 = new JButton("추가 예정?");
