@@ -108,8 +108,21 @@ public class MainFrame extends JFrame {
 		JButton btnPitcher = new JButton("피처 티어");
 		btnPitcher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				playerImgDir = new File(workingDir + "/resource/imgs/players/pitchers");
-				loadImagesToPanel();
+				JDialog loadingDialog = createLoadingDialog();
+				SwingWorker<Void, Void> worker = new SwingWorker<>() {
+					@Override
+					protected Void doInBackground() {
+						playerImgDir = new File(workingDir + "/resource/imgs/players/pitchers");
+						loadImagesToPanel();
+						return null;
+					}
+					@Override
+					protected void done() {
+						loadingDialog.dispose();
+					}
+				};
+				worker.execute();
+				loadingDialog.setVisible(true);
 			}
 		});
 		btnPitcher.setBounds(383, 6, 157, 47);
@@ -118,8 +131,21 @@ public class MainFrame extends JFrame {
 		JButton btnBatter = new JButton("타자 티어");
 		btnBatter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
-				loadImagesToPanel();
+				JDialog loadingDialog = createLoadingDialog();
+				SwingWorker<Void, Void> worker = new SwingWorker<>() {
+					@Override
+					protected Void doInBackground() {
+						playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
+						loadImagesToPanel();
+						return null;
+					}
+					@Override
+					protected void done() {
+						loadingDialog.dispose();
+					}
+				};
+				worker.execute();
+				loadingDialog.setVisible(true);
 			}
 		});
 		btnBatter.setBounds(552, 6, 157, 47);
@@ -199,6 +225,17 @@ public class MainFrame extends JFrame {
 		}
 		imgPanel.revalidate();
 		imgPanel.repaint();
+	}
+
+	private JDialog createLoadingDialog() {
+		JDialog dialog = new JDialog(this, "로딩중", true);
+		JLabel label = new JLabel("이미지를 불러오는 중입니다...", SwingConstants.CENTER);
+		dialog.getContentPane().add(label);
+		dialog.setSize(250, 100);
+		dialog.setLocationRelativeTo(this);
+		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		dialog.setResizable(false);
+		return dialog;
 	}
 
 	public static void main(String[] args) {
