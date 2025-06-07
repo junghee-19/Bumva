@@ -104,6 +104,23 @@ public class SignUpForm extends JFrame {
 		panel.setLayout(null);
 
 		JButton btnSignUp = new JButton("회원가입");
+		btnSignUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tfCheckPS.getText().equals("비밀번호 확인") || tfPS.getText().equals("비밀번호") || 
+						tfNickname.getText().equals("닉네임") || tfID.getText().equals("아이디")) {
+					javax.swing.JOptionPane.showMessageDialog(contentPane, "모든 필드를 올바르게 입력해주세요.", "오류", javax.swing.JOptionPane.ERROR_MESSAGE);
+				} else if (!tfPS.getText().equals(tfCheckPS.getText())) {
+					javax.swing.JOptionPane.showMessageDialog(contentPane, "비밀번호가 일치하지 않습니다.", "오류", javax.swing.JOptionPane.ERROR_MESSAGE);
+				} else {
+					javax.swing.JOptionPane.showMessageDialog(contentPane, "회원가입이 완료되었습니다!", "성공", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+					if (signInForm == null) {
+						signInForm = new SignInForm();
+					}
+					
+					// DB연결시 여기다 로직 추가
+				}
+			}
+		});
 		btnSignUp.setBounds(16, 457, 143, 47);
 		panel.add(btnSignUp);
 		btnSignUp.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
@@ -131,6 +148,7 @@ public class SignUpForm extends JFrame {
 		panel.add(tfCheckPS);
 		tfCheckPS.setForeground(Color.GRAY);
 		tfCheckPS.setColumns(10);
+		
 
 		JButton btnBack = new JButton("뒤로");
 		btnBack.setBounds(171, 457, 143, 47);
@@ -196,8 +214,14 @@ public class SignUpForm extends JFrame {
 						}
 						@Override
 						public void mouseExited(java.awt.event.MouseEvent e) {
-
 							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 2));
+						}
+						@Override
+						public void mousePressed(java.awt.event.MouseEvent e) {
+						    if (e.getButton() == java.awt.event.MouseEvent.BUTTON1) { // 왼쪽 버튼
+						        javax.swing.JOptionPane.showMessageDialog(contentPane, "이미지를 왼쪽 버튼으로 눌렀습니다." + 
+						            "\n이미지 경로: " + imgFile.getAbsolutePath(), "이미지 클릭", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+						    }
 						}
 					});
 					

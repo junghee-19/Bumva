@@ -21,7 +21,10 @@ import java.awt.event.ActionEvent;
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 	private SignInForm signInForm;
-	
+	private String workingDir;
+	private File playerImgDir;
+	private JPanel imgPanel;
+
 	public MainFrame() {
 		try {
 			UIManager.setLookAndFeel(new FlatLightLaf());
@@ -80,46 +83,19 @@ public class MainFrame extends JFrame {
 		imgScrollPane.setBounds(6, 6, 349, 423);
 		centerPanel.add(imgScrollPane);
 		
-		JPanel imgPanel = new JPanel();
+		imgPanel = new JPanel();
 		imgScrollPane.setViewportView(imgPanel);
-		
-        String workingDir = System.getProperty("user.dir");
+
+        workingDir = System.getProperty("user.dir");
         System.out.println("Working Directory = " + workingDir);
 
         // 4. 이미지 폴더 경로 설정
-        File playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
+        playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
         System.out.println("실제 이미지 디렉터리 → " + playerImgDir.getAbsolutePath());
         System.out.println("존재 여부 → " + playerImgDir.exists());
+
+		loadImagesToPanel();
 		
-        FilenameFilter imgFilter = (dir, name) -> {
-            String lower = name.toLowerCase();
-            return lower.endsWith(".jpg") || lower.endsWith(".jpeg")
-                || lower.endsWith(".png") || lower.endsWith(".gif") || lower.endsWith(".bmp");
-        };
-        
-        File[] imgFiles = playerImgDir.listFiles(imgFilter);
-        if (imgFiles != null && imgFiles.length > 0) {
-			imgPanel.setLayout(new GridLayout(0, 4, 10, 10)); // 3열로 설정
-			for (File imgFile : imgFiles) {
-				try {
-					BufferedImage img = javax.imageio.ImageIO.read(imgFile);
-
-		            Image scaledImg = img.getScaledInstance(70, 85, Image.SCALE_SMOOTH);
-
-		            // 2) JLabel 에 축소된 아이콘 세팅
-		            JLabel imgLabel = new JLabel(new ImageIcon(scaledImg));
-					
-					imgPanel.add(imgLabel);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			JLabel noImgLabel = new JLabel("이미지가 없습니다.");
-			noImgLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			imgPanel.add(noImgLabel);
-		}
-        
 		// 표 컬럼 및 데이터
 		String[] columnNames = { "순위", "선수명", "팀명", "평균자책점", "경기", "승리", "패배", "팀순위" };
 		Object[][] data = {
@@ -130,10 +106,22 @@ public class MainFrame extends JFrame {
 		DefaultTableModel model = new DefaultTableModel(data, columnNames);
 		
 		JButton btnPitcher = new JButton("피처 티어");
+		btnPitcher.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				playerImgDir = new File(workingDir + "/resource/imgs/players/pitchers");
+				loadImagesToPanel();
+			}
+		});
 		btnPitcher.setBounds(383, 6, 157, 47);
 		centerPanel.add(btnPitcher);
 		
 		JButton btnBatter = new JButton("타자 티어");
+		btnBatter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
+				loadImagesToPanel();
+			}
+		});
 		btnBatter.setBounds(552, 6, 157, 47);
 		centerPanel.add(btnBatter);
 		
@@ -165,8 +153,52 @@ public class MainFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(imagePanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	}
 
-
+	private void loadImagesToPanel() {
+		imgPanel.removeAll();
+		imgPanel.setLayout(new GridLayout(0, 4, 10, 10));
+		FilenameFilter imgFilter = (dir, name) -> {
+			String lower = name.toLowerCase();
+			return lower.endsWith(".jpg") || lower.endsWith(".jpeg")
+				|| lower.endsWith(".png") || lower.endsWith(".gif") || lower.endsWith(".bmp");
+		};
+		File[] imgFiles = playerImgDir.listFiles(imgFilter);
+		if (imgFiles != null && imgFiles.length > 0) {
+			for (File imgFile : imgFiles) {
+				try {
+					BufferedImage img = javax.imageio.ImageIO.read(imgFile);
+					Image scaledImg = img.getScaledInstance(70, 85, Image.SCALE_SMOOTH);
+					JLabel imgLabel = new JLabel(new ImageIcon(scaledImg));
+					imgLabel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 2));
+					imgLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+						@Override
+						public void mouseEntered(java.awt.event.MouseEvent e) {
+							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 255), 2));
+						}
+						@Override
+						public void mouseExited(java.awt.event.MouseEvent e) {
+							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 2));
+						}
+						@Override
+						public void mousePressed(java.awt.event.MouseEvent e) {
+							if (e.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+								javax.swing.JOptionPane.showMessageDialog(imgPanel, "이미지를 왼쪽 버튼으로 눌렀습니다.\n이미지 경로: " + imgFile.getAbsolutePath(), "이미지 클릭", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+							}
+						}
+					});
+					imgPanel.add(imgLabel);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			JLabel noImgLabel = new JLabel("이미지가 없습니다.");
+			noImgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			imgPanel.add(noImgLabel);
+		}
+		imgPanel.revalidate();
+		imgPanel.repaint();
 	}
 
 	public static void main(String[] args) {
