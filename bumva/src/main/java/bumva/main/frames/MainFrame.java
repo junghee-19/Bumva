@@ -15,6 +15,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
@@ -79,6 +80,9 @@ public class MainFrame extends JFrame {
 		imgScrollPane.setBounds(6, 6, 349, 423);
 		centerPanel.add(imgScrollPane);
 		
+		JPanel imgPanel = new JPanel();
+		imgScrollPane.setViewportView(imgPanel);
+		
         String workingDir = System.getProperty("user.dir");
         System.out.println("Working Directory = " + workingDir);
 
@@ -87,7 +91,35 @@ public class MainFrame extends JFrame {
         System.out.println("실제 이미지 디렉터리 → " + playerImgDir.getAbsolutePath());
         System.out.println("존재 여부 → " + playerImgDir.exists());
 		
+        FilenameFilter imgFilter = (dir, name) -> {
+            String lower = name.toLowerCase();
+            return lower.endsWith(".jpg") || lower.endsWith(".jpeg")
+                || lower.endsWith(".png") || lower.endsWith(".gif") || lower.endsWith(".bmp");
+        };
+        
+        File[] imgFiles = playerImgDir.listFiles(imgFilter);
+        if (imgFiles != null && imgFiles.length > 0) {
+			imgPanel.setLayout(new GridLayout(0, 4, 10, 10)); // 3열로 설정
+			for (File imgFile : imgFiles) {
+				try {
+					BufferedImage img = javax.imageio.ImageIO.read(imgFile);
 
+		            Image scaledImg = img.getScaledInstance(70, 85, Image.SCALE_SMOOTH);
+
+		            // 2) JLabel 에 축소된 아이콘 세팅
+		            JLabel imgLabel = new JLabel(new ImageIcon(scaledImg));
+					
+					imgPanel.add(imgLabel);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			JLabel noImgLabel = new JLabel("이미지가 없습니다.");
+			noImgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			imgPanel.add(noImgLabel);
+		}
+        
 		// 표 컬럼 및 데이터
 		String[] columnNames = { "순위", "선수명", "팀명", "평균자책점", "경기", "승리", "패배", "팀순위" };
 		Object[][] data = {
