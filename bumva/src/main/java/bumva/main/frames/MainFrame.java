@@ -83,7 +83,7 @@ public class MainFrame extends JFrame {
         System.out.println("Working Directory = " + workingDir);
 
         // 4. 이미지 폴더 경로 설정
-        File playerImgDir = new File(workingDir + "/src/img/player");
+        File playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
         System.out.println("실제 이미지 디렉터리 → " + playerImgDir.getAbsolutePath());
         System.out.println("존재 여부 → " + playerImgDir.exists());
 		
