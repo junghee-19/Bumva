@@ -149,7 +149,7 @@ public class SignUpForm extends JFrame {
 		btnBack.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 
 		JScrollPane teamScrollPane = new JScrollPane();
-		teamScrollPane.setBounds(16, 308, 312, 108);
+		teamScrollPane.setBounds(16, 311, 312, 124);
 		panel.add(teamScrollPane);
 
 		JPanel imgPanel = new JPanel();
@@ -181,10 +181,25 @@ public class SignUpForm extends JFrame {
 				try {
 					BufferedImage img = javax.imageio.ImageIO.read(imgFile);
 
-		            Image scaledImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		            Image scaledImg = img.getScaledInstance(100, 90, Image.SCALE_SMOOTH);
 
 		            // 2) JLabel 에 축소된 아이콘 세팅
 		            JLabel imgLabel = new JLabel(new ImageIcon(scaledImg));
+					imgLabel.setOpaque(true); // Allow background color
+					imgLabel.setBackground(Color.WHITE); // Default background
+					imgLabel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 2));
+					
+					imgLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+						@Override
+						public void mouseEntered(java.awt.event.MouseEvent e) {
+							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 255), 2));
+						}
+						@Override
+						public void mouseExited(java.awt.event.MouseEvent e) {
+
+							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 2));
+						}
+					});
 					
 					imgPanel.add(imgLabel);
 				} catch (Exception e) {
