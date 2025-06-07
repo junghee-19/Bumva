@@ -5,9 +5,14 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FilenameFilter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -35,10 +40,10 @@ public class SignUpForm extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
-	private JTextField textField_2;
-	private JTextField textField_1;
-	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField tfID;
+	private JTextField tfPS;
+	private JTextField tfCheckPS;
+	private JTextField tfNickname;
 	protected SignInForm signInForm;
 
 	/**
@@ -98,39 +103,39 @@ public class SignUpForm extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 
-		JButton btnNewButton = new JButton("회원가입");
-		btnNewButton.setBounds(16, 457, 143, 47);
-		panel.add(btnNewButton);
-		btnNewButton.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		JButton btnSignUp = new JButton("회원가입");
+		btnSignUp.setBounds(16, 457, 143, 47);
+		panel.add(btnSignUp);
+		btnSignUp.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 
-		textField_2 = new JTextField("아이디");
-		textField_2.setBounds(37, 65, 267, 47);
-		panel.add(textField_2);
-		textField_2.setForeground(Color.GRAY);
-		textField_2.setColumns(10);
+		tfID = new JTextField("아이디");
+		tfID.setBounds(37, 65, 267, 47);
+		panel.add(tfID);
+		tfID.setForeground(Color.GRAY);
+		tfID.setColumns(10);
 
-		textField_4 = new JTextField("닉네임");
-		textField_4.setBounds(37, 124, 267, 47);
-		panel.add(textField_4);
-		textField_4.setForeground(Color.GRAY);
-		textField_4.setColumns(10);
+		tfNickname = new JTextField("닉네임");
+		tfNickname.setBounds(37, 124, 267, 47);
+		panel.add(tfNickname);
+		tfNickname.setForeground(Color.GRAY);
+		tfNickname.setColumns(10);
 
-		textField_1 = new JTextField("비밀번호");
-		textField_1.setBounds(37, 183, 267, 47);
-		panel.add(textField_1);
-		textField_1.setForeground(Color.GRAY);
-		textField_1.setColumns(10);
+		tfPS = new JTextField("비밀번호");
+		tfPS.setBounds(37, 183, 267, 47);
+		panel.add(tfPS);
+		tfPS.setForeground(Color.GRAY);
+		tfPS.setColumns(10);
 
-		textField_3 = new JTextField("비밀번호 확인");
-		textField_3.setBounds(37, 242, 267, 47);
-		panel.add(textField_3);
-		textField_3.setForeground(Color.GRAY);
-		textField_3.setColumns(10);
+		tfCheckPS = new JTextField("비밀번호 확인");
+		tfCheckPS.setBounds(37, 242, 267, 47);
+		panel.add(tfCheckPS);
+		tfCheckPS.setForeground(Color.GRAY);
+		tfCheckPS.setColumns(10);
 
-		JButton btnNewButton_1 = new JButton("뒤로");
-		btnNewButton_1.setBounds(171, 457, 143, 47);
-		panel.add(btnNewButton_1);
-		btnNewButton_1.addActionListener(new ActionListener() {
+		JButton btnBack = new JButton("뒤로");
+		btnBack.setBounds(171, 457, 143, 47);
+		panel.add(btnBack);
+		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (signInForm == null) {
 					signInForm = new SignInForm();
@@ -141,98 +146,135 @@ public class SignUpForm extends JFrame {
 				dispose(); // 현재 창을 닫음
 			}
 		});
-		btnNewButton_1.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		btnBack.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(16, 308, 312, 108);
-		panel.add(scrollPane);
+		JScrollPane teamScrollPane = new JScrollPane();
+		teamScrollPane.setBounds(16, 308, 312, 108);
+		panel.add(teamScrollPane);
 
-		JPanel imagePanel = new JPanel();
-		imagePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10)); // Horizontal layout with spacing
+		JPanel imgPanel = new JPanel();
+		imgPanel.setBackground(new Color(255, 255, 255));
+		imgPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10)); // Horizontal layout with spacing
 
 		// Set the image panel as the viewport of the scroll pane
-		scrollPane.setViewportView(imagePanel);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		teamScrollPane.setViewportView(imgPanel);
+		teamScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		teamScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		
+        String workingDir = System.getProperty("user.dir");
+        System.out.println("Working Directory = " + workingDir);
 
-		JLabel lblNewLabel_2 = new JLabel("KBO.GG 회원가입");
-		lblNewLabel_2.setBounds(0, 6, 341, 53);
-		panel.add(lblNewLabel_2);
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 30));
+        // 4. 이미지 폴더 경로 설정
+        File playerImgDir = new File(workingDir + "/resource/imgs/teams");
+        System.out.println("실제 이미지 디렉터리 → " + playerImgDir.getAbsolutePath());
+        System.out.println("존재 여부 → " + playerImgDir.exists());
+        
+        FilenameFilter imgFilter = (dir, name) -> {
+            String lower = name.toLowerCase();
+            return lower.endsWith(".jpg") || lower.endsWith(".jpeg")
+                || lower.endsWith(".png") || lower.endsWith(".gif") || lower.endsWith(".bmp");
+        };
+        
+        File[] imgFiles = playerImgDir.listFiles(imgFilter);
+        if (imgFiles != null && imgFiles.length > 0) {
+			for (File imgFile : imgFiles) {
+				try {
+					BufferedImage img = javax.imageio.ImageIO.read(imgFile);
+
+		            Image scaledImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+		            // 2) JLabel 에 축소된 아이콘 세팅
+		            JLabel imgLabel = new JLabel(new ImageIcon(scaledImg));
+					
+					imgPanel.add(imgLabel);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			JLabel noImgLabel = new JLabel("이미지가 없습니다.");
+			noImgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			imgPanel.add(noImgLabel);
+		}
+
+		JLabel singUpLabel = new JLabel("KBO.GG 회원가입");
+		singUpLabel.setBounds(0, 6, 341, 53);
+		panel.add(singUpLabel);
+		singUpLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		singUpLabel.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 30));
 
 		// Add FocusListener to textField_3
-		textField_3.addFocusListener(new FocusListener() {
+		tfCheckPS.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (textField_3.getText().equals("비밀번호 확인")) {
-					textField_3.setText("");
-					textField_3.setForeground(Color.BLACK);
+				if (tfCheckPS.getText().equals("비밀번호 확인")) {
+					tfCheckPS.setText("");
+					tfCheckPS.setForeground(Color.BLACK);
 				}
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (textField_3.getText().isEmpty()) {
-					textField_3.setText("비밀번호 확인");
-					textField_3.setForeground(Color.GRAY);
+				if (tfCheckPS.getText().isEmpty()) {
+					tfCheckPS.setText("비밀번호 확인");
+					tfCheckPS.setForeground(Color.GRAY);
 				}
 			}
 		});
 
 		// Add FocusListener to textField_1
-		textField_1.addFocusListener(new FocusListener() {
+		tfPS.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (textField_1.getText().equals("비밀번호")) {
-					textField_1.setText("");
-					textField_1.setForeground(Color.BLACK);
+				if (tfPS.getText().equals("비밀번호")) {
+					tfPS.setText("");
+					tfPS.setForeground(Color.BLACK);
 				}
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (textField_1.getText().isEmpty()) {
-					textField_1.setText("비밀번호");
-					textField_1.setForeground(Color.GRAY);
+				if (tfPS.getText().isEmpty()) {
+					tfPS.setText("비밀번호");
+					tfPS.setForeground(Color.GRAY);
 				}
 			}
 		});
 
 		// Add FocusListener to textField_4
-		textField_4.addFocusListener(new FocusListener() {
+		tfNickname.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (textField_4.getText().equals("닉네임")) {
-					textField_4.setText("");
-					textField_4.setForeground(Color.BLACK);
+				if (tfNickname.getText().equals("닉네임")) {
+					tfNickname.setText("");
+					tfNickname.setForeground(Color.BLACK);
 				}
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (textField_4.getText().isEmpty()) {
-					textField_4.setText("닉네임");
-					textField_4.setForeground(Color.GRAY);
+				if (tfNickname.getText().isEmpty()) {
+					tfNickname.setText("닉네임");
+					tfNickname.setForeground(Color.GRAY);
 				}
 			}
 		});
 
 		// Add FocusListener to textField_2
-		textField_2.addFocusListener(new FocusListener() {
+		tfID.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (textField_2.getText().equals("아이디")) {
-					textField_2.setText("");
-					textField_2.setForeground(Color.BLACK);
+				if (tfID.getText().equals("아이디")) {
+					tfID.setText("");
+					tfID.setForeground(Color.BLACK);
 				}
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (textField_2.getText().isEmpty()) {
-					textField_2.setText("아이디");
-					textField_2.setForeground(Color.GRAY);
+				if (tfID.getText().isEmpty()) {
+					tfID.setText("아이디");
+					tfID.setForeground(Color.GRAY);
 				}
 			}
 		});
