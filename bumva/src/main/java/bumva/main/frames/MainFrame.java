@@ -1,4 +1,5 @@
 package bumva.main.frames;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -6,6 +7,9 @@ import javax.swing.table.DefaultTableModel;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import bumva.db.BatterDAO;
+import bumva.db.DatabaseManager;
+import bumva.db.PitcherDAO;
 import bumva.main.components.HeaderPanel;
 import bumva.main.components.RoundedButton;
 import bumva.main.components.RoundedTextField;
@@ -24,6 +28,7 @@ public class MainFrame extends JFrame {
 	private String workingDir;
 	private File playerImgDir;
 	private JPanel imgPanel;
+	private DefaultTableModel model;
 
 	public MainFrame() {
 		try {
@@ -90,24 +95,43 @@ public class MainFrame extends JFrame {
         System.out.println("Working Directory = " + workingDir);
 
         // 4. 이미지 폴더 경로 설정
-        playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
+        playerImgDir = new File(workingDir + "/resource/imgs/players/pitchers");
         System.out.println("실제 이미지 디렉터리 → " + playerImgDir.getAbsolutePath());
         System.out.println("존재 여부 → " + playerImgDir.exists());
 
 		loadImagesToPanel();
+		JPanel imagePanel = new JPanel();
+		imagePanel.setLayout(new GridBagLayout()); // Use GridBagLayout for dynamic rows
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(5, 5, 5, 5); // Add some spacing between images
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
 		
-		// 표 컬럼 및 데이터
-		String[] columnNames = { "순위", "선수명", "팀명", "평균자책점", "경기", "승리", "패배", "팀순위" };
-		Object[][] data = {
-			{ "1", "류현진", "한화", "2.34", "25", "15", "3", "2" },
-			{ "2", "김광현", "SSG", "2.67", "24", "14", "4", "3" }
-		};
+// Add the image panel to a scroll pane
+		JScrollPane tearScrollPane = new JScrollPane();
+		tearScrollPane.setBounds(383, 67, 664, 362);
+		centerPanel.add(tearScrollPane);
+		
+		JScrollPane scrollPane = new JScrollPane(imagePanel);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
+		JTable table = new JTable(model);
+		tearScrollPane.setViewportView(table);
+		
+		DatabaseManager.getConnection(); // Ensure DB connection is established	
 
-		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		model = PitcherDAO.getPitcherData();
 		
 		JButton btnPitcher = new JButton("피처 티어");
 		btnPitcher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// 테이블 모델 초기화
+				model.setRowCount(0); // Clear existing rows
+				model = PitcherDAO.getPitcherData(); // Reload data from the database
+				table.setModel(model);
+				
 				JDialog loadingDialog = createLoadingDialog();
 				SwingWorker<Void, Void> worker = new SwingWorker<>() {
 					@Override
@@ -131,6 +155,11 @@ public class MainFrame extends JFrame {
 		JButton btnBatter = new JButton("타자 티어");
 		btnBatter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// 테이블 모델 초기화
+				model.setRowCount(0); // Clear existing rows
+				model = BatterDAO.getBatterData(); // Reload data from the database
+				table.setModel(model);
+				
 				JDialog loadingDialog = createLoadingDialog();
 				SwingWorker<Void, Void> worker = new SwingWorker<>() {
 					@Override
@@ -152,6 +181,12 @@ public class MainFrame extends JFrame {
 		centerPanel.add(btnBatter);
 		
 		JButton btnteam = new JButton("팀 티어");
+		btnteam.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model = PitcherDAO.getPitcherData(); // Reload data from the databasv
+				table.setModel(model);
+			}
+		});
 		btnteam.setBounds(721, 6, 157, 47);
 		centerPanel.add(btnteam);
 		
@@ -159,26 +194,9 @@ public class MainFrame extends JFrame {
 		btnAll.setBounds(890, 6, 157, 47);
 		centerPanel.add(btnAll);
 		
-		JScrollPane tearScrollPane = new JScrollPane();
-		tearScrollPane.setBounds(383, 67, 664, 362);
-		centerPanel.add(tearScrollPane);
 		
-		JTable table = new JTable(model);
-		tearScrollPane.setViewportView(table);
 
 		// Image grid panel
-		JPanel imagePanel = new JPanel();
-		imagePanel.setLayout(new GridBagLayout()); // Use GridBagLayout for dynamic rows
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(5, 5, 5, 5); // Add some spacing between images
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-
-// Add the image panel to a scroll pane
-		JScrollPane scrollPane = new JScrollPane(imagePanel);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	}
 
 	private void loadImagesToPanel() {
@@ -186,8 +204,8 @@ public class MainFrame extends JFrame {
 		imgPanel.setLayout(new GridLayout(0, 4, 10, 10));
 		FilenameFilter imgFilter = (dir, name) -> {
 			String lower = name.toLowerCase();
-			return lower.endsWith(".jpg") || lower.endsWith(".jpeg")
-				|| lower.endsWith(".png") || lower.endsWith(".gif") || lower.endsWith(".bmp");
+			return lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png") || lower.endsWith(".gif")
+					|| lower.endsWith(".bmp");
 		};
 		File[] imgFiles = playerImgDir.listFiles(imgFilter);
 		if (imgFiles != null && imgFiles.length > 0) {
@@ -202,14 +220,18 @@ public class MainFrame extends JFrame {
 						public void mouseEntered(java.awt.event.MouseEvent e) {
 							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 255), 2));
 						}
+
 						@Override
 						public void mouseExited(java.awt.event.MouseEvent e) {
 							imgLabel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 2));
 						}
+
 						@Override
 						public void mousePressed(java.awt.event.MouseEvent e) {
 							if (e.getButton() == java.awt.event.MouseEvent.BUTTON1) {
-								javax.swing.JOptionPane.showMessageDialog(imgPanel, "이미지를 왼쪽 버튼으로 눌렀습니다.\n이미지 경로: " + imgFile.getAbsolutePath(), "이미지 클릭", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+								javax.swing.JOptionPane.showMessageDialog(imgPanel,
+										"이미지를 왼쪽 버튼으로 눌렀습니다.\n이미지 경로: " + imgFile.getAbsolutePath(), "이미지 클릭",
+										javax.swing.JOptionPane.INFORMATION_MESSAGE);
 							}
 						}
 					});
