@@ -77,7 +77,7 @@ public class HeaderPanel extends JPanel {
         });
         topMenuPanel.add(btnMenu1);
 
-        JButton btnMenu2 = new JButton("야구 동영상");
+        JButton btnMenu2 = new JButton("하이라이트");
         btnMenu2.setBounds(175, 0, 117, 35);
         btnMenu2.setForeground(new Color(255, 254, 255));
         btnMenu2.setBackground(new Color(47, 62, 98));
@@ -109,7 +109,7 @@ public class HeaderPanel extends JPanel {
         btnMenu3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (playerStatsUI == null) {
-                    playerStatsUI = new PlayerStatsUI("선수 이름"); // 선수 이름은 실제로는 동적으로 받아와야 합니다.
+                    playerStatsUI = new PlayerStatsUI("선수 이름","batters"); // 선수 이름은 실제로는 동적으로 받아와야 합니다.
                 }
                 Point currentLocation = parentFrame.getLocation();
                 playerStatsUI.setLocation(currentLocation);

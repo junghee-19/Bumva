@@ -26,6 +26,7 @@ public class MainFrame extends JFrame {
 	private File playerImgDir;
 	private JPanel imgPanel;
 	private DefaultTableModel model;
+	private String position;
 	protected PlayerStatsUI playerStatsUI;
 
 	// 캐시된 썸네일 저장 (파일 경로 -> ImageIcon)
@@ -37,7 +38,7 @@ public class MainFrame extends JFrame {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-
+		position = "pitchers"; // 기본 포지션 설정
 		setTitle("메인 프레임");
 		setSize(1100, 700);
 		setResizable(false);
@@ -102,6 +103,7 @@ public class MainFrame extends JFrame {
 
 		JButton btnPitcher = new JButton("피처 티어");
 		btnPitcher.addActionListener(e -> {
+			position = "pitchers"; // 피처로 포지션 변경
 			model = PitcherDAO.getPitcherData();
 			table.setModel(model);
 			playerImgDir = new File(workingDir + "/resource/imgs/players/pitchers");
@@ -112,6 +114,7 @@ public class MainFrame extends JFrame {
 
 		JButton btnBatter = new JButton("타자 티어");
 		btnBatter.addActionListener(e -> {
+			position = "batters"; // 타자로 포지션 변경
 			model = BatterDAO.getBatterData();
 			table.setModel(model);
 			playerImgDir = new File(workingDir + "/resource/imgs/players/batters");
@@ -182,7 +185,7 @@ public class MainFrame extends JFrame {
 												+ "\n선택된 팀: " + baseName,
 										"이미지 클릭", javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
-								playerStatsUI = new PlayerStatsUI(baseName);
+								playerStatsUI = new PlayerStatsUI(baseName, position);
 								playerStatsUI.setLocation(getLocation());
 								playerStatsUI.setVisible(true);
 								setVisible(false);

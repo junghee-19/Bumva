@@ -24,8 +24,10 @@ import bumva.main.components.PlayerInfoBox;
 public class PlayerStatsUI extends JFrame {
     private static final String FONT_PATH = "/Users/choejeonghui/Documents/GitHub/Bumva/bumva/resource/fonts/The Jamsil 5 Bold.ttf";
     private static final String TEAM_IMG_DIR = System.getProperty("user.dir") + "/resource/imgs/teams/";
+    
 
     private final String playerName;
+    private final String position;
     private final String[][] playerData;
 
     private CardLayout cardLayout;
@@ -37,9 +39,11 @@ public class PlayerStatsUI extends JFrame {
     private JPanel commentDisplayPanel;
     private JTextField commentInput;
 
-    public PlayerStatsUI(String playerName) {
+    public PlayerStatsUI(String playerName,String position) {
         this.playerName = playerName;
-        this.playerData = BatterDetailDAO.getBatterData(playerName);
+        this.position = position;
+        
+        this.playerData = BatterDetailDAO.getBatterData(playerName, position);
 
         
         
@@ -59,14 +63,19 @@ public class PlayerStatsUI extends JFrame {
 
         // 메인 수직 레이아웃
         JPanel mainPanel = new JPanel();
-        mainPanel.setBounds(0, 1, 1100, 671);
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBounds(0, 108, 1100, 564);
+        mainPanel.setLayout(null);
 
         // 선수 정보 영역
         JPanel playerInfo = new JPanel(null);
+        playerInfo.setBounds(0, 0, 1100, 200);
         playerInfo.setPreferredSize(new Dimension(1100, 200));
         playerInfo.setBackground(new Color(0, 32, 98));
-        JLabel img = new JLabel(new ImageIcon(TEAM_IMG_DIR + playerName + ".png"));
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/resource/imgs/players/" + position + "/" + playerName + ".jpeg");
+        Image imgRaw = icon.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        JLabel img = new JLabel(new ImageIcon(imgRaw));
+        img.setBounds(20, 20, 160, 160);
+        playerInfo.add(img);
         img.setBounds(20, 20, 160, 160);
         playerInfo.add(img);
         JLabel name = new JLabel(playerName);
@@ -78,10 +87,12 @@ public class PlayerStatsUI extends JFrame {
 
         // 탭 버튼 패널
         JPanel tabButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
-        tabButtons.setBackground(new Color(230, 230, 230));
+        tabButtons.setBounds(0, 200, 1100, 51);
+        tabButtons.setBackground(new Color(255, 255, 255));
         String[] tabs = {"정보창", "댓글", "랭킹갱신"};
         cardLayout = new CardLayout();
         mainContentPanel = new JPanel(cardLayout);
+        mainContentPanel.setBounds(0, 251, 1100, 313);
         for (String t : tabs) {
             JButton b = new JButton(t);
             b.setFont(loadCustomFont(16f, false));
@@ -103,10 +114,11 @@ public class PlayerStatsUI extends JFrame {
 
         // PlayerInfoBox 스크롤 영역
         JPanel boxContainer = new JPanel(null);
+        boxContainer.setBackground(new Color(255, 255, 255));
         JScrollPane boxScroll = new JScrollPane(boxContainer,
                 JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        boxScroll.setBounds(0, 116, 1100, 135);
+        boxScroll.setBounds(0, 0, 1100, 114);
         boxScroll.setPreferredSize(new Dimension(1100, 100));
         for (int i = 0; i < playerData[0].length && playerData[0][i] != null; i++) {
             PlayerInfoBox pib = new PlayerInfoBox(playerData[0][i], playerData[1][i]);
@@ -117,22 +129,48 @@ public class PlayerStatsUI extends JFrame {
         boxContainer.setPreferredSize(new Dimension(playerData[0].length * 120 + 20, 100));
         infoTab.add(boxScroll);
 
-        // 통계 테이블
-        String[] cols = playerData[0];
-        Object[][] rows = {playerData[1]};
+       
 
         // 차트
+     // 기존 dataset 초기화 아래에 삽입
         dataset = new DefaultCategoryDataset();
-        JFreeChart chart = ChartFactory.createLineChart("", "항목", "값", dataset,
-                PlotOrientation.VERTICAL, false, false, false);
+        // 초기 차트에 승률, 승, 패, 무 데이터 추가
+        String[] initialKeys = {"승률", "승", "패", "무"};
+        for (String key : initialKeys) {
+            for (int i = 0; i < playerData[0].length; i++) {
+                if (playerData[0][i] != null && playerData[0][i].equals(key)) {
+                    try {
+                        double v = Double.parseDouble(playerData[1][i]);
+                        dataset.addValue(v, key, key);
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                }
+            }
+        }
+        // 기존 라인 차트 생성부
+        dataset = new DefaultCategoryDataset();
+        JFreeChart chart = ChartFactory.createLineChart(
+                "선수 주요 지표",      // 제목
+                "Metric",            // X축 레이블 (지표명)
+                "Value",             // Y축 레이블 (값)
+                dataset,             
+                PlotOrientation.VERTICAL,
+                true,   // 범례 표시 (여러 series 시)
+                false,
+                false
+        );
         CategoryPlot cp = chart.getCategoryPlot();
         LineAndShapeRenderer lr = (LineAndShapeRenderer)cp.getRenderer();
         lr.setSeriesStroke(0, new BasicStroke(3f));
         lr.setSeriesShapesVisible(0, true);
+
         chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(0, 250, 1100, 200);
-        chartPanel.setPreferredSize(new Dimension(1100, 200));
+        chartPanel.setBounds(0, 113, 1100, 200);
         infoTab.add(chartPanel);
+
+        // **한 번에 모든 숫자형 컬럼을 로드**
+        populateAllMetrics();
+        
 
         mainContentPanel.add(infoTab, "정보창");
 
@@ -182,20 +220,41 @@ public class PlayerStatsUI extends JFrame {
         });
     }
 
-    private void updateDataset(String metric) {
+    private void populateAllMetrics() {
         dataset.clear();
         for (int i = 0; i < playerData[0].length; i++) {
-            String col = playerData[0][i];
-            if (col != null && col.equals(metric)) {
-                try {
-                    double v = Double.parseDouble(playerData[1][i]);
-                    dataset.addValue(v, metric, metric);
-                } catch (NumberFormatException ex) {}
-                break;
+            String metric = playerData[0][i];
+            String valStr = playerData[1][i];
+            if (metric == null || valStr == null) continue;
+            try {
+                double v = Double.parseDouble(valStr);
+                dataset.addValue(v, "Stats", metric);
+            } catch (NumberFormatException ex) {
+                // 숫자가 아닌 컬럼은 건너뜀
             }
         }
     }
 
+    /**
+     * 단일 컬럼 클릭 시 해당 지표만 다시 그리는 메서드
+     */
+    private void updateDataset(String metric) {
+        dataset.clear();
+        for (int i = 0; i < playerData[0].length; i++) {
+            if (metric.equals(playerData[0][i])) {
+                String valStr = playerData[1][i];
+                if (valStr != null) {
+                    try {
+                        double v = Double.parseDouble(valStr);
+                        dataset.addValue(v, "Stats", metric);
+                    } catch (NumberFormatException ex) {
+                        // 무시
+                    }
+                }
+                break;
+            }
+        }
+    }
     private ImageIcon loadTeamIcon(String team) {
         try {
             BufferedImage img = javax.imageio.ImageIO.read(new File(TEAM_IMG_DIR + team + ".png"));
@@ -220,6 +279,6 @@ public class PlayerStatsUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PlayerStatsUI("Oh Ji-hwan").setVisible(true));
+        SwingUtilities.invokeLater(() -> new PlayerStatsUI("Oh Ji-hwan","batters").setVisible(true));
     }
 }
