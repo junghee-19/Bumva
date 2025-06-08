@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class TeamDAO {
     public static DefaultTableModel getTeamData() {
-        String[] columns = { "순위", "팀명", "승", "패", "무", "승률", "득점", "실점", "홈런", "팀타율" };
+        String[] columns = { "순위", "팀명", "경", "승리", "무", "패", "win_rate", "game_diff" };
         DefaultTableModel model = new DefaultTableModel(columns, 0);
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -15,15 +15,13 @@ public class TeamDAO {
             while (rs.next()) {
                 Object[] row = {
                     rs.getInt("team_rank"),
-                    rs.getString("team"),
-                    rs.getInt("w"),
-                    rs.getInt("l"),
-                    rs.getInt("d"),
-                    rs.getFloat("win_rate"),
-                    rs.getInt("rs"),
-                    rs.getInt("ra"),
-                    rs.getInt("hr"),
-                    rs.getFloat("avg")
+                    rs.getString("team_name"),
+                    rs.getInt("games"),
+                    rs.getInt("wins"),
+                    rs.getInt("draws"),
+                    rs.getFloat("losses"),
+                    rs.getInt("win_rate"),
+                    rs.getInt("game_diff")
                 };
                 model.addRow(row);
             }
