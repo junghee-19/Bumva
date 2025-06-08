@@ -108,7 +108,7 @@ public class HeaderPanel extends JPanel {
         btnMenu3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (playerStatsUI == null) {
-                    playerStatsUI = new PlayerStatsUI();
+                    playerStatsUI = new PlayerStatsUI("선수 이름"); // 선수 이름은 실제로는 동적으로 받아와야 합니다.
                 }
                 Point currentLocation = parentFrame.getLocation();
                 playerStatsUI.setLocation(currentLocation);
