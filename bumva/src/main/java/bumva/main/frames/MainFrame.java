@@ -149,7 +149,7 @@ public class MainFrame extends JFrame {
 				loadingDialog.setVisible(true);
 			}
 		});
-		btnPitcher.setBounds(383, 6, 157, 47);
+		btnPitcher.setBounds(383, 6, 210, 47);
 		centerPanel.add(btnPitcher);
 		
 		JButton btnBatter = new JButton("타자 티어");
@@ -177,7 +177,7 @@ public class MainFrame extends JFrame {
 				loadingDialog.setVisible(true);
 			}
 		});
-		btnBatter.setBounds(552, 6, 157, 47);
+		btnBatter.setBounds(610, 8, 210, 47);
 		centerPanel.add(btnBatter);
 		
 		JButton btnteam = new JButton("팀 티어");
@@ -187,12 +187,8 @@ public class MainFrame extends JFrame {
 				table.setModel(model);
 			}
 		});
-		btnteam.setBounds(721, 6, 157, 47);
+		btnteam.setBounds(837, 6, 210, 47);
 		centerPanel.add(btnteam);
-		
-		JButton btnAll = new JButton("전체 선수");
-		btnAll.setBounds(890, 6, 157, 47);
-		centerPanel.add(btnAll);
 		
 		
 
