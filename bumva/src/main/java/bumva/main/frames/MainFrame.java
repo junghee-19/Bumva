@@ -37,7 +37,7 @@ public class MainFrame extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+//test
 		setTitle("메인 프레임");
 		setSize(1100, 700);
 		setResizable(false);
