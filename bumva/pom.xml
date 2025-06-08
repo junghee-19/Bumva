@@ -12,7 +12,8 @@
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>21.0.1</javafx.version>
-    <javafx.sdk.path>/Users/choejeonghui/Downloads/javafx-sdk-21.0.1/lib</javafx.sdk.path>
+    <!-- 실제 SDK 경로를 맞춰주세요 -->
+    <javafx.sdk.path>/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib</javafx.sdk.path>
   </properties>
 
   <dependencies>
@@ -28,6 +29,25 @@
       <groupId>com.formdev</groupId>
       <artifactId>flatlaf</artifactId>
       <version>3.2</version>
+    </dependency>
+
+    <!-- JFreeChart -->
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jcommon</artifactId>
+      <version>1.0.24</version>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.3.0</version>
     </dependency>
 
     <!-- JavaFX -->
@@ -49,31 +69,9 @@
       <version>${javafx.version}</version>
       <classifier>mac-aarch64</classifier>
     </dependency>
-
-    <!-- JFreeChart -->
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-      <version>1.5.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jcommon</artifactId>
-      <version>1.0.24</version>
-    </dependency>
-
-    <!-- MySQL -->
-<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
-	<dependency>
-	    <groupId>com.mysql</groupId>
-	    <artifactId>mysql-connector-j</artifactId>
-	    <version>9.3.0</version>
-	</dependency>
   </dependencies>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -85,7 +83,7 @@
     </resources>
 
     <plugins>
-      <!-- Java 21 Compiler 설정 -->
+      <!-- Java 21 Compiler -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -95,13 +93,12 @@
         </configuration>
       </plugin>
 
-      <!-- JavaFX 실행용 Maven Plugin -->
+      <!-- exec-maven-plugin (테스트용) -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <mainClass>bumva.main.frames.MainFrame</mainClass>
           <arguments>
             <argument>--module-path</argument>
             <argument>${javafx.sdk.path}</argument>
@@ -109,6 +106,41 @@
             <argument>javafx.controls,javafx.fxml,javafx.web</argument>
           </arguments>
         </configuration>
+      </plugin>
+
+      <!-- maven-shade-plugin: Fat‐Jar 생성 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <!-- "-all" classifier -->
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>all</shadedClassifierName>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>resource.bumva.ChatWithVideoApp</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <includes>
+                  <include>org.openjfx:javafx-*</include>
+                  <include>com.formdev:flatlaf</include>
+                  <include>com.miglayout:miglayout-swing</include>
+                  <include>org.jfree:jfreechart</include>
+                  <include>org.jfree:jcommon</include>
+                  <include>com.mysql:mysql-connector-j</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

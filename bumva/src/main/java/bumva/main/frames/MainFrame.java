@@ -228,6 +228,9 @@ public class MainFrame extends JFrame {
 								javax.swing.JOptionPane.showMessageDialog(imgPanel,
 										"이미지를 왼쪽 버튼으로 눌렀습니다.\n이미지 경로: " + imgFile.getAbsolutePath(), "이미지 클릭",
 										javax.swing.JOptionPane.INFORMATION_MESSAGE);
+								
+								// 이미지 클릭시 파일이름만 따와서 디테일 페이지로 넘기기
+							
 							}
 						}
 					});
