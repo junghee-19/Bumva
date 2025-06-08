@@ -14,7 +14,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import bumva.db.BatterDetailDAO;
 import bumva.main.components.HeaderPanel;
+import bumva.main.components.PlayerInfoBox;
 
 public class PlayerStatsUI extends JFrame {
 	private static final String FONT_PATH = "/Users/choejeonghui/Documents/GitHub/Bumva/bumva/resource/fonts/The Jamsil 5 Bold.ttf";
@@ -24,9 +26,11 @@ public class PlayerStatsUI extends JFrame {
 	private JFreeChart lineChart;
 	private ChartPanel chartPanel;
 	private String playerName;
+	private String[][] playerData;
 
 	public PlayerStatsUI(String playerName) {
 		this.playerName = playerName;
+		this.playerData = BatterDetailDAO.getBatterData(playerName);
 		
 		setTitle("선수 상세 프레임");
 		setSize(1100, 700);
@@ -43,16 +47,6 @@ public class PlayerStatsUI extends JFrame {
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-		JPanel playerInfoPanel = new JPanel(new BorderLayout());
-		playerInfoPanel.setPreferredSize(new Dimension(1200, 200));
-		playerInfoPanel.setBackground(new Color(0, 32, 98));
-
-		JLabel playerImage = new JLabel(new ImageIcon("ponce.png"));
-		playerImage.setPreferredSize(new Dimension(250, 200));
-		playerImage.setHorizontalAlignment(SwingConstants.CENTER);
-		playerInfoPanel.add(playerImage, BorderLayout.WEST);
-		mainPanel.add(playerInfoPanel);
 
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 		buttonPanel.setPreferredSize(new Dimension(1200, 50));
@@ -72,6 +66,25 @@ public class PlayerStatsUI extends JFrame {
 			});
 			buttonPanel.add(btn);
 		}
+
+		JPanel playerInfoPanel = new JPanel();
+		playerInfoPanel.setPreferredSize(new Dimension(1200, 200));
+		playerInfoPanel.setBackground(new Color(0, 32, 98));
+		playerInfoPanel.setLayout(null);
+
+		JLabel playerImage = new JLabel(new ImageIcon("ponce.png"));
+		playerImage.setBounds(0, 0, 250, 156);
+		playerImage.setPreferredSize(new Dimension(250, 200));
+		playerImage.setHorizontalAlignment(SwingConstants.CENTER);
+		playerInfoPanel.add(playerImage);
+		mainPanel.add(playerInfoPanel);
+
+		JLabel playerNameLabel = new JLabel("New label");
+		playerNameLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 34));
+		playerNameLabel.setForeground(new Color(255, 255, 255));
+		playerNameLabel.setBounds(230, 17, 463, 41);
+		playerNameLabel.setText(playerName);
+		playerInfoPanel.add(playerNameLabel);
 		mainPanel.add(buttonPanel);
 
 		cardLayout = new CardLayout();
@@ -79,16 +92,7 @@ public class PlayerStatsUI extends JFrame {
 		mainContentPanel.setPreferredSize(new Dimension(1200, 450));
 
 		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
-		String[] columns = { "평균자책", "승-패", "이닝", "삼진", "피안타", "피홈런", "볼넷", "WHIP" };
-		Object[][] rowData = { { "1.48", "8-0", "67", "93", "39", "2", "18", "0.85" } };
-		JTable table = new JTable(new DefaultTableModel(rowData, columns));
-		table.setFont(loadCustomFont(14f, false));
-		table.setRowHeight(28);
-		JScrollPane tableScroll = new JScrollPane(table);
-		tableScroll.setPreferredSize(new Dimension(1200, 150));
-		infoPanel.add(tableScroll);
 
 		dataset = new DefaultCategoryDataset();
 		updateDataset("평균자책");
@@ -99,21 +103,40 @@ public class PlayerStatsUI extends JFrame {
 		LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
 		renderer.setSeriesStroke(0, new BasicStroke(3f));
 		renderer.setSeriesShapesVisible(0, true);
+		infoPanel.setLayout(null);
 		chartPanel = new ChartPanel(lineChart);
+		chartPanel.setBounds(0, 107, 1100, 256);
 		chartPanel.setPreferredSize(new Dimension(1200, 250));
 		infoPanel.add(chartPanel);
 
-		table.getTableHeader().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int col = table.columnAtPoint(e.getPoint());
-				String columnName = table.getColumnName(col);
-				updateDataset(columnName);
-				lineChart.setTitle("경기별 " + columnName);
-			}
-		});
-
 		mainContentPanel.add(infoPanel, "info");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 1100, 110);
+		infoPanel.add(scrollPane);
+		
+		// 가로로 스크롤 패널 생성 
+		JPanel panel = new JPanel();
+		scrollPane.setViewportView(panel);
+		panel.setLayout(null);
+		
+		//PlayerInfoBox를 사용해서 100 간격으로 playerData를 표시
+		for (int i = 0; i < playerData[0].length; i++) {
+			String title = playerData[0][i];
+			String data = playerData[1][i];
+			
+			PlayerInfoBox infoBox = new PlayerInfoBox(title, data);
+			infoBox.setBounds(6 + (i * 100), 6, 77, 76);
+			panel.add(infoBox);
+			
+			// panel 가로 크기 조정해서 스크롤 되게 
+			Dimension preferredSize = panel.getPreferredSize();
+			preferredSize.width = (i + 1) * 100 + 12; // 100 간격으로 크기 조정
+			panel.setPreferredSize(preferredSize);
+				
+			}
+		
+		
 
 		JPanel commentPanel = new JPanel(new BorderLayout());
 		JTextArea commentArea = new JTextArea();
@@ -184,8 +207,6 @@ public class PlayerStatsUI extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() ->
-	    new PlayerStatsUI("코디폰세").setVisible(true)
-	    );
+		SwingUtilities.invokeLater(() -> new PlayerStatsUI("Kim Seong-yoon").setVisible(true));
 	}
 }

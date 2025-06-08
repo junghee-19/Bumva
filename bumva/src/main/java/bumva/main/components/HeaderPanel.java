@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 public class HeaderPanel extends JPanel {
     private SignInForm signInForm;
     private JFrame parentFrame;
-    private MainFrame mainFrame;
+    public static MainFrame mainFrame;
     protected PlayerStatsUI playerStatsUI;
 
     public HeaderPanel(JFrame parentFrame) {
@@ -65,13 +65,14 @@ public class HeaderPanel extends JPanel {
         btnMenu1.setBorder(new MatteBorder(0, 1, 0, 0, Color.WHITE));
         btnMenu1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (mainFrame == null) {
-                    mainFrame = new MainFrame();
-                }
                 Point currentLocation = parentFrame.getLocation();
                 mainFrame.setLocation(currentLocation);
-                mainFrame.setVisible(true);
-                parentFrame.setVisible(false);
+                
+                if (parentFrame instanceof MainFrame) {
+				} else {
+					mainFrame.setVisible(true);
+					parentFrame.dispose();
+				}
             }
         });
         topMenuPanel.add(btnMenu1);

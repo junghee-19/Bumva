@@ -15,13 +15,13 @@ public class BatterDAO {
             while (rs.next()) {
                 Object[] row = {
                     rs.getInt("batter_rank"),
-                    rs.getString("name"),
+                    rs.getString("batter_name"),
                     rs.getString("team"),
                     rs.getFloat("avg"),
                     rs.getInt("hr"),
-                    rs.getInt("rbi"),
+                    rs.getInt("ab"),
                     rs.getInt("sb"),
-                    rs.getFloat("obp"),
+                    rs.getFloat("ops"),
                     rs.getFloat("slg")
                 };
                 model.addRow(row);
