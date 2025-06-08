@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.web.WebView;
 
+import bumva.main.frames.SignInForm;
+import bumva.db.UserDAO;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -18,40 +21,49 @@ public class ChatWithVideoController {
     @FXML
     public void initialize() {
         webView.getEngine().load("https://www.youtube.com/embed/T7BLbJqVxRA");
-        System.out.println("✅ initialize 실행됨");
 
+        // 서버 연결
         new Thread(() -> {
             try {
                 Socket socket = new Socket("localhost", 7777);
-                System.out.println("✅ 서버 연결됨");
-                out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                System.out.println("✅ 스트림 초기화 완료");
-
+                out = new BufferedWriter(
+                    new OutputStreamWriter(socket.getOutputStream())
+                );
+                BufferedReader in = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream())
+                );
                 String line;
                 while ((line = in.readLine()) != null) {
                     String finalLine = line;
-                    javafx.application.Platform.runLater(() -> chatArea.appendText(finalLine + "\n"));
+                    Platform.runLater(() ->
+                        chatArea.appendText(finalLine + "\n")
+                    );
                 }
-
             } catch (IOException e) {
                 showError("서버 연결 실패: " + e.getMessage());
             }
         }).start();
-
-        inputField.setOnAction(e -> sendMessage());  // 엔터로 전송
     }
 
     @FXML
     private void sendMessage() {
         if (out == null) {
-            System.out.println("❌ BufferedWriter out이 초기화되지 않았습니다.");
+            System.err.println("❌ 서버 연결이 아직 준비되지 않았습니다.");
             return;
         }
+        String raw = inputField.getText().trim();
+        if (raw.isEmpty()) return;
 
+        // 로그인된 userId → nickname
+        String userId = SignInForm.getCurrentUserId();
+        System.out.println("DEBUG: currentUserId = " + userId);
+        String nickname = UserDAO.getNickname(userId);
+        if (nickname == null) nickname = "익명";
+
+        String msgToSend = nickname + ": " + raw;
         try {
-            String msg = inputField.getText();
-            out.write(msg + "\n");
+            chatArea.appendText(msgToSend + "\n");
+            out.write(msgToSend + "\n");
             out.flush();
             inputField.clear();
         } catch (IOException e) {

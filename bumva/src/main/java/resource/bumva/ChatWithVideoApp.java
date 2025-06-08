@@ -13,7 +13,9 @@ public class ChatWithVideoApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/bumva/MainUI.fxml"));
+        Parent root = FXMLLoader.load(
+            getClass().getResource("/bumva/MainUI.fxml")
+        );
         stage.setScene(new Scene(root));
         stage.setTitle("Chat + Video");
         stage.show();

@@ -27,12 +27,18 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
+          <mainClass>resource.bumva.ChatWithVideoApp</mainClass>
           <arguments>
             <argument>--module-path</argument>
             <argument>${javafx.sdk.path}</argument>
             <argument>--add-modules</argument>
             <argument>javafx.controls,javafx.fxml,javafx.web</argument>
           </arguments>
+          <systemPropertyVariables>
+            <java.library.path>${javafx.sdk.path}</java.library.path>
+            <prism.order>sw</prism.order>
+            <prism.verbose>true</prism.verbose>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
@@ -71,7 +77,7 @@
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <javafx.version>21.0.1</javafx.version>
+    <javafx.version>21.0.2</javafx.version>
     <javafx.sdk.path>/Users/choejeonghui/Downloads/javafx-sdk-21.0.2-aarch64/lib</javafx.sdk.path>
   </properties>
 </project>
