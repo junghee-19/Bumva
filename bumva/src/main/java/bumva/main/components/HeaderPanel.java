@@ -81,7 +81,7 @@ public class HeaderPanel extends JPanel {
         btnMenu2.setBounds(175, 0, 117, 35);
         btnMenu2.setForeground(new Color(255, 254, 255));
         btnMenu2.setBackground(new Color(47, 62, 98));
-        btnMenu2.setBorder(new MatteBorder(0, 1, 0, 0, Color.WHITE));
+        btnMenu2.setBorder(new MatteBorder(0, 1, 0, 1, Color.WHITE));
         btnMenu2.addActionListener(e -> {
             try {
                 // 이제 "-all.jar" 만 실행하면 됩니다
@@ -100,23 +100,5 @@ public class HeaderPanel extends JPanel {
             }
         });
         topMenuPanel.add(btnMenu2);
-
-        JButton btnMenu3 = new JButton("추가 예정?");
-        btnMenu3.setBounds(293, 0, 117, 35);
-        btnMenu3.setForeground(new Color(255, 254, 255));
-        btnMenu3.setBackground(new Color(47, 62, 98));
-        btnMenu3.setBorder(new MatteBorder(0, 1, 0, 1, Color.WHITE));
-        btnMenu3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (playerStatsUI == null) {
-                    playerStatsUI = new PlayerStatsUI("선수 이름","batters"); // 선수 이름은 실제로는 동적으로 받아와야 합니다.
-                }
-                Point currentLocation = parentFrame.getLocation();
-                playerStatsUI.setLocation(currentLocation);
-                playerStatsUI.setVisible(true);
-                parentFrame.setVisible(false);
-            }
-        });
-        topMenuPanel.add(btnMenu3);
     }
 }
