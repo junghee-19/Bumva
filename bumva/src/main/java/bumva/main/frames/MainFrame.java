@@ -180,10 +180,10 @@ public class MainFrame extends JFrame {
 								String fileName = imgFile.getName();
 								String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
 
-								javax.swing.JOptionPane.showMessageDialog(
-										imgLabel, "이미지를 왼쪽 버튼으로 눌렀습니다." + "\n이미지 경로: " + imgFile.getAbsolutePath()
-												+ "\n선택된 팀: " + baseName,
-										"이미지 클릭", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+//								javax.swing.JOptionPane.showMessageDialog(
+//										imgLabel, "이미지를 왼쪽 버튼으로 눌렀습니다." + "\n이미지 경로: " + imgFile.getAbsolutePath()
+//												+ "\n선택된 팀: " + baseName,
+//										"이미지 클릭", javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
 								playerStatsUI = new PlayerStatsUI(baseName, position);
 								playerStatsUI.setLocation(getLocation());
