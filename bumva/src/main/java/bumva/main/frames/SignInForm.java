@@ -26,6 +26,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import bumva.db.UserDAO;
 import bumva.main.components.HeaderPanel;
 import bumva.main.components.RoundedPanel;
+import resource.bumva.ChatWithVideoUI;
 
 @SuppressWarnings("serial")
 public class SignInForm extends JFrame {
@@ -130,17 +131,19 @@ public class SignInForm extends JFrame {
         btnLogin = new JButton("로그인");
         btnLogin.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
         btnLogin.setBounds(39, 344, 267, 51);
-        btnLogin.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String userId = idField.getText().trim();
-                String password = pwdField.getText().trim();
-                if (UserDAO.login(userId, password)) {
-                    currentUserId = userId;
-                    new MainFrame().setVisible(true);
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(SignInForm.this, "로그인 실패");
-                }
+     // SignInForm.java
+
+        btnLogin.addActionListener(e -> {
+            String userId = idField.getText().trim();
+            String password = pwdField.getText().trim();
+            if (UserDAO.login(userId, password)) {
+                // 로그인 성공 → JavaFX 채팅+비디오 UI 띄우기
+                SignInForm.currentUserId = userId;  // static 필드에 저장 (필요에 따라 제거 가능)
+                // ChatWithVideoUI 로 userId 전달
+                ChatWithVideoUI.main(new String[]{ userId });
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(SignInForm.this, "로그인 실패");
             }
         });
         panel.add(btnLogin);

@@ -7,23 +7,34 @@ import javafx.scene.layout.*;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
+import bumva.db.UserDAO;              // <-- 여기 추가
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 public class ChatWithVideoUI extends Application {
     private TextArea chatArea;
     private TextField inputField;
-    private Button sendButton;
     private BufferedWriter out;
-    private Socket socket;
+    private String nickname;        // ← 로그인 닉네임을 저장할 필드
 
     public static void main(String[] args) {
-        launch(args);  // JavaFX 앱 시작
+        launch(args);  // JavaFX 앱 시작, args[0]에 userId가 넘어옵니다.
     }
 
     @Override
     public void start(Stage primaryStage) {
-        System.out.println("[클라이언트] UI 시작");
+        // 1) 런칭 인자에서 userId 꺼내기
+        List<String> raw = getParameters().getRaw();
+        String userId = raw.isEmpty() ? null : raw.get(0);
+        // 2) DAO로 닉네임 조회 (없으면 익명)
+        nickname = (userId != null) 
+                 ? UserDAO.getNickname(userId) 
+                 : null;
+        if (nickname == null || nickname.isBlank()) {
+            nickname = "익명";
+        }
+        System.out.println("[DEBUG] 채팅 닉네임: " + nickname);
 
         // ───── UI 구성 ─────
         VBox root = new VBox(10);
@@ -38,19 +49,19 @@ public class ChatWithVideoUI extends Application {
 
         inputField = new TextField();
         inputField.setPromptText("메시지를 입력하세요...");
-        inputField.setOnAction(e -> sendMessage()); // 엔터 전송
+        inputField.setOnAction(e -> sendMessage());
 
-        sendButton = new Button("전송");
+        Button sendButton = new Button("전송");
         sendButton.setOnAction(e -> sendMessage());
 
         HBox inputBox = new HBox(10, inputField, sendButton);
-        HBox.setHgrow(inputField, Priority.ALWAYS); // ← HBox에서 setHgrow는 static 메서드임
+        HBox.setHgrow(inputField, Priority.ALWAYS);
 
         root.getChildren().addAll(webView, chatArea, inputBox);
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Chat + Video");
+        primaryStage.setTitle("Chat + Video (" + nickname + ")");
         primaryStage.show();
 
         // ───── 서버 연결 ─────
@@ -60,31 +71,33 @@ public class ChatWithVideoUI extends Application {
     private void connectToServer() {
         new Thread(() -> {
             try {
-                System.out.println("[클라이언트] 서버에 연결 시도 중...");
-                socket = new Socket("localhost", 7777);
+                Socket socket = new Socket("localhost", 7777);
                 out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                System.out.println("[클라이언트] 서버 연결 성공");
 
                 String line;
                 while ((line = in.readLine()) != null) {
                     String finalLine = line;
-                    System.out.println("[서버 → 클라이언트 수신] " + finalLine);
-                    javafx.application.Platform.runLater(() -> chatArea.appendText(finalLine + "\n"));
+                    javafx.application.Platform.runLater(() ->
+                        chatArea.appendText(finalLine + "\n")
+                    );
                 }
-
             } catch (IOException e) {
                 showError("서버 연결 실패: " + e.getMessage());
             }
-        }).start();
+        }, "Chat-Thread").start();
     }
 
     private void sendMessage() {
-        String msg = inputField.getText().trim();
-        System.out.println("[클라이언트] 전송 요청: " + msg);
-        if (msg.isEmpty()) return;
+        String raw = inputField.getText().trim();
+        if (raw.isEmpty()) return;
 
+        // 여기서 닉네임을 붙입니다.
+        String msg = nickname + ": " + raw;
         try {
+            // 화면 출력
+            chatArea.appendText(msg + "\n");
+            // 서버 전송
             out.write(msg + "\n");
             out.flush();
             inputField.clear();
